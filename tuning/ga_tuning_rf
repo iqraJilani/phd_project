@@ -1,0 +1,44 @@
+import numpy as np
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
+
+from ga import GeneticAlgorithm
+# Define the parameter search space for the genetic algorithm
+param_grid = {
+    'crossover_prob': [0.6, 0.7, 0.8],
+    'mutation_prob': [0.02, 0.05, 0.1]
+}
+
+# Generate some example data for training the surrogate model
+# Here, you would use your own data related to the problem you're optimizing
+
+
+# Train a Random Forest regressor to approximate the fitness landscape
+surrogate_model = RandomForestRegressor()
+surrogate_model.fit(X_train, y_train)
+
+# Define a function to evaluate the fitness of an individual using the surrogate model
+def evaluate_fitness(individual):
+    # Convert the individual parameters to a feature vector
+    features = np.array([[individual[param] for param in param_grid.keys()]])
+    # Predict the fitness using the surrogate model
+    return surrogate_model.predict(features)
+
+# Define the genetic algorithm (simplified version for demonstration)
+
+
+# Run the genetic algorithm and use the surrogate model to evaluate fitness
+best_params = {}
+best_fitness = float('inf')
+for _ in range(100):  # Run GA multiple times
+    # Sample random parameters for the genetic algorithm
+    individual = {param: np.random.choice(values) for param, values in param_grid.items()}
+    # Evaluate fitness using the surrogate model
+    fitness = evaluate_fitness(individual)
+    # Update best parameters if necessary
+    if fitness < best_fitness:
+        best_fitness = fitness
+        best_params = individual
+
+print("Best parameters found using Random Forest surrogate model:", best_params)
+print("Corresponding fitness:", best_fitness)
